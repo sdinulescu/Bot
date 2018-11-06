@@ -1,4 +1,6 @@
 public class MarkovGenerator<E> {
+
+  
   private ArrayList<String> alphabet = new ArrayList<String>(); //arrayList for alphabet for Markov Chain
   private ArrayList<Integer> instances = new ArrayList<Integer>(); //number of times each thing in the alphabet occurs
   private ArrayList<String> generatedMarkov = new ArrayList<String>(); //whatever is generated from the Markov Chain
