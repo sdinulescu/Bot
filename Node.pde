@@ -18,13 +18,21 @@ class Node {
     word = w;
     instance = i;
   }
-
+  
+  void setType(String t) {
+    type = t;
+  }
+  
   String getWord() {
     return word;
   }
 
   int getInstance() {
     return instance;
+  }
+  
+  String getType() {
+    return type;
   }
 
   void incrementInstance() {
@@ -53,7 +61,7 @@ class Node {
 
   public void listChildren(int level) {
     print("children: ");
-    println(word + " " + instance);
+    println(word + " " + instance + " " + type);
     for (int i = 0; i < children.size(); i++) {
       children.get(i).listChildren(level+1);
     }
@@ -83,22 +91,117 @@ class Node {
     } 
   }
   
+  void characterize(String str) {
+    str = word;
+    if (isGreeting(str)) { 
+      //greetings.add(str);
+      type = "greeting";
+      //println("greeting: " + str);
+    } else if (isSubject(str)) {  
+      type = "subject";
+      //println("subject: " + str );
+    } else if (isName(str)) { 
+      type = "name";
+      //println("name: " + str );
+    } else if (isPossesive(str)) { 
+      type = "possessive";
+      //println("possessive: " + str );
+    } else if (isNoun(str)) {  
+      type = "noun";
+      //println("noun: " + str );
+    } else if (isVerb(str)) {  
+      type = "verb";
+      //println("verb: " + str );
+    } else if (isAdjective(str)) {  
+      type = "adjective";
+      //println("adjective: " + str );
+    } else { 
+      type = "other";
+      //println("other: " + str );
+    }
+    
+  }
+  
+  boolean isSubject( String word ) {
+    if (  word.equals("I") || word.equals("she") || word.equals("he") || word.equals("they")  ) {  
+      return true;
+    } else {  
+      return false;
+    }
+  }
+
+  boolean isPossesive( String word ) {
+    if ( word.equals("my") || word.equals("hers") || word.equals("his") || word.equals("theirs") || word.equals("mine") || word.equals("yours") ) { 
+      return true;
+    } else { 
+      return false;
+    }
+  }
+
+  boolean isNoun( String word ) {
+    if (  isVerb( word)  == false ) { 
+      return true;
+    } else { 
+      return false;
+    }
+  }
+
+  boolean isVerb( String word ) {
+    if ( word.equals("is") || word.equals("are") || word.equals("am") ) {  
+      return true;
+    }
+    if ( word.contains("ing") ) { 
+      return true;
+    }
+    if ( word.length() > 2 && word.substring(word.length()-2, word.length()).equals("ed") ) {
+      return true;
+    } 
+    //if (  ( word != alphabet.get(0) ) && !isNoun( word )  ) {  return true;  } //if it is not the first word or if it is not a noun, then it is a verb
+    else { 
+      return false;
+    }
+  }
+
+  boolean isAdjective( String word ) {
+    if ( isNoun( word ) == false && isVerb( word ) == false ) { 
+      return true;
+    } else { 
+      return false;
+    }
+  } 
+
+  boolean isName( String word ) {
+    if ( Character.isUpperCase(  word.charAt(0)  ) == true && word.length() > 0 &&  isGreeting(word) == false ) { 
+      return true;
+    } else { 
+      return false;
+    }
+  }
+
+  boolean isGreeting( String word ) {
+    String w = word.toLowerCase();
+    if ( w.equals("hello") || w.equals("hi") || w.contains("good") ) { 
+      return true;
+    } else { 
+      return false;
+    }
+  }
+  
   public float calculateEmpProbs(String input, float total, double pMinValue) { //calculates and sets empirical probability for each node
-    println("total: " + total);
-    println("instance: " + instance + " word: " + word);
+    //println("total: " + total);
+    //println("instance: " + instance + " word: " + word);
     float empProb = instance/total; //calculates empirical probability
-    println("empProb: " + empProb);
+    //println("empProb: " + empProb);
     //System.out.println(getString() + " " + empProb);
     if (empProb < pMinValue && word!="") { //handles base case, removes node if probability is below pMin cutoff
       //System.out.println("Remove " + getString());
       //set all attributes to null
       empProb = 0.0;
-      word = null;
+      word = "";
       instance = 0;
       int index = 0;
-      while (word == null && index < children.size()) { //if a motive is null, remove the children
+      while (word.equals("") && index < children.size()) { //if a motive is null, remove the children
         children.remove(index);
-        //node = null; //should remove null? How do I delete the single node within this class?
       }
     } else { 
       empiricalProbability = empProb; 
@@ -118,52 +221,5 @@ class Node {
       println("children: " + word + " " + childrenProbabilities);
     }
   }
-  
-
-//  public String generate(String curr, ArrayList<Character> singleMotives, int lvalue) { //generate string in PST node class based on probability
-//    double rand = 0.0;
-//    double prob = 0;
-//    double nextProb = 0;
-//    boolean found = false;
-//    //takes in a string as input to decide on probabilities
-//    //look backwards in generated string
-//    String generatedStr = ""; //instantiate generatedString
-//    if (curr.equals(stringMotives)) { //if the input equals the stringMotive
-//      found = true;
-//      //System.out.println("Found");
-//      nextProb = nextProbs.get(0);
-//      //calculate based on probability what comes next
-//      rand = Math.random(); //generates random number
-//      for (int i = 0; i < nextProbs.size() - 1; i++) { //check probability ranges
-////        System.out.println("Prob: " + prob + " Rand: " + rand + " nextProb: " + nextProb); //probability ranges
-//        if (prob < rand && rand < nextProb) {
-//          generatedStr = singleMotives.get(i) + "";
-////          System.out.println("Char added: " + generatedStr);
-//          return generatedStr;
-//        } else { 
-//          prob = nextProbs.get(i);
-//          nextProb = nextProb + nextProbs.get(i+1);
-//        }
-//      } 
-//    } else { //search through children until it is found
-//      int index = 0;
-//      while (!found && index < children.size()) {
-////        System.out.println("Not found");
-//        children.get(index).generate(curr, singleMotives, lvalue); //search children
-//        index++;
-//      }
-//      if (found) { 
-//        //System.out.println("HELLLLLOOOOOOOOO"); 
-//        return  generatedStr;   
-//      }
-//      else { 
-//        //System.out.println("Generating from empty"); 
-//        return "";  
-//      }
-//    }
-//    return generatedStr;
-//  }
-
-
-  
+ 
 }

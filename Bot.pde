@@ -1,13 +1,19 @@
 ArrayList<String> sentences = new ArrayList<String>();
 Parser parser = new Parser();
 
+void readFile() {
+  String[] lines = loadStrings("text.txt"); //each line of text file becomes a slot in the array
+  for (int i = 0; i < lines.length; i++) {
+    sentences.add(lines[i]);
+  }
+}
+
 void setup() {
-  sentences.add("Hello my name is Bob");
-  sentences.add("How is it going?");
-  sentences.add("What is your name?");
-  sentences.add("Bob hopped over the lazy fox");
-  sentences.add("Hello, is it too soon to say I'm sorry?");
-  sentences.add("Tell me a story");
+  readFile();
+  
+  for ( int i = 0; i < sentences.size(); i++ ) {
+    println(sentences.get(i));
+  }
   
   train();
 }
@@ -15,16 +21,18 @@ void setup() {
 void train() {
   for (int i = 0; i < sentences.size(); i++) {
     parser.parse(sentences.get(i));
-    parser.characterizeAlphabet();
-    println("--------------------");
+    parser.characterizeAlphabet(parser.tree.getNodes());
+    println("-----------------------------------------------------");
   }
   parser.printTree();
   for (int i = 0; i < sentences.size(); i++) {
     parser.train();
   }
-  
+
+ println("-----------------------------------------------------");
+  parser.respond();
 }
 
 void draw() {
-  //parser.respond();
+  
 }
