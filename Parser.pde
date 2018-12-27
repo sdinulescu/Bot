@@ -40,7 +40,7 @@ public class Parser {
 
   String handleQuestion(String sentence) {
     String s = sentence;
-    if (sentence.charAt(sentence.length() - 1) == '?') { 
+    if (sentence.length() > 0 && sentence.charAt(sentence.length() - 1) == '?') { 
       s = s.substring(0, s.length() - 1);
       //println("new sentence: " + s);
     }
@@ -97,16 +97,23 @@ public class Parser {
         }
       }
     }
+    //println("characterize done");
   }
 
   void train() {
     tree.eliminateEmpirical(0);
-    tree.printProbabilities();
+    //tree.printProbabilities();
+    tree.implementSmoothing(0.01);
   }
 
-  void respond() {
+  String respond() {
+    sentence = "";
     sentence = tree.generate();
-    println(sentence);
+    if (sentence == "") {
+      sentence = "I don't understand";
+    }     
+    //println(sentence);
+    //println(alphabet);
+    return sentence;
   }
- 
 }

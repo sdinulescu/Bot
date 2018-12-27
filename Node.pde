@@ -171,7 +171,7 @@ class Node {
   } 
 
   boolean isName( String word ) {
-    if ( Character.isUpperCase(  word.charAt(0)  ) == true && word.length() > 0 &&  isGreeting(word) == false ) { 
+    if ( word.length() > 0 && Character.isUpperCase(  word.charAt(0)  ) == true && word.length() > 0 &&  isGreeting(word) == false ) { 
       return true;
     } else { 
       return false;
@@ -213,6 +213,14 @@ class Node {
     }
     
     return empProb;
+  }
+  
+  public void calcSmoothing(double gval) { //smoothing algorithm
+    //System.out.println(getNextProbs());
+    for (int i = 0; i < childrenProbabilities.size(); i++) {
+      childrenProbabilities.set(i, (float)((1 - (gval * instance))* childrenProbabilities.get(i) + gval)) ;
+    }
+    //System.out.println("New probs: " + nextProbs);
   }
  
   public void printProbabilities() {

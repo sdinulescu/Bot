@@ -38,6 +38,19 @@ class Tree {
     }
   }
   
+  void implementSmoothing(double gVal) { //implements smoothing
+    for (int i = 0; i < nodes.get(i).getChildren().size(); i++) {
+      nodes.get(i).getChildren().get(i).calcSmoothing(gVal);
+      if (nodes.get(i).getChildren().get(i).hasChildren()) {
+        for (int j = 0; j < nodes.get(i).getChildren().get(i).getChildren().size(); j++) {
+          nodes.get(i).getChildren().get(i).getChildren().get(j).calcSmoothing(gVal);
+        }
+      }
+    }
+  }
+  
+
+  
   public void pickWord(String tense) {
     float rand = random(0, 0.1);
     for(int i = 0; i < nodes.size() - 1; i++) {
@@ -49,20 +62,49 @@ class Tree {
   }
   
   public String generate() {
+    sentence = "";
     String word = "";
-
-    //generate subject
-    pickWord("name");
-    if (word.equals("")) {
-      pickWord("subject");
+    int r = (int)random(0, 3);
+    
+    switch(r) {
+      case 0:  //normal subject verb
+        //generate subject
+        pickWord("name");
+        if (word.equals("")) {
+          pickWord("subject");
+        }
+        //sentence = sentence + word + " ";
+        //generate verb
+        pickWord("verb");
+        //generate rest of sentence
+        pickWord("adjective");
+        pickWord("noun");
+        break;
+      case 1: //make a gerund phrase
+        pickWord("verb");
+        if (sentence.length() != 0 ){
+        sentence = sentence.substring(0, sentence.length() - 1);
+        sentence = sentence + "ing ";
+        }
+        pickWord("adjective");
+        pickWord("subject"); 
+        pickWord("noun");
+        break;
+      case 2:
+        pickWord("subject");
+        pickWord("verb");
+        break;
+      case 3:
+        pickWord("other");
+        pickWord("subject");
+        pickWord("adjective");
+        pickWord("verb");
+        break;
     }
-    //sentence = sentence + word + " ";
-    //generate verb
-    pickWord("verb");
-    //generate rest of sentence
-    pickWord("adjective");
-    pickWord("noun");
-    pickWord("subject");
+        
+    
+    
+    
    
     return sentence;
   }
